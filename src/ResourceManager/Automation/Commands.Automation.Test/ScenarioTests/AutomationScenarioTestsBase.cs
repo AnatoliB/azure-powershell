@@ -24,6 +24,10 @@ using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
 
 namespace Microsoft.Azure.Commands.Automation.Test
 {
+    using System.IO;
+
+    using Microsoft.Azure.Test.HttpRecorder;
+
     public abstract class AutomationScenarioTestsBase : RMTestBase
     {
         private readonly EnvironmentSetupHelper _helper;
@@ -45,6 +49,7 @@ namespace Microsoft.Azure.Commands.Automation.Test
             var sf = new StackTrace().GetFrame(1);
             var callingClassType = sf.GetMethod().ReflectedType?.ToString();
             var mockName = sf.GetMethod().Name;
+            HttpMockServer.RecordsDirectory = Path.Combine("D:\\", "SessionRecords");
 
             using (var context = MockContext.Start(callingClassType, mockName))
             {
