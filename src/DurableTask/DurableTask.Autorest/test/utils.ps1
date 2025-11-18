@@ -44,6 +44,17 @@ function setupEnv() {
     $env.SubscriptionId = (Get-AzContext).Subscription.Id
     $env.Tenant = (Get-AzContext).Tenant.Id
     # For any resources you created for test, you should add it to $env here.
+    $env.Add("location", "northcentralus")
+    $resourceGroup = "ps-test-durable-task-" + (RandomString -allChars $false -len 4)
+    $env.Add("resourceGroup", $resourceGroup)
+    New-AzResourceGroup -Name $env.resourceGroup -Location $env.location
+    
+    $schedulerName = "ps-test-scheduler-" + (RandomString -allChars $false -len 4)
+    $env.Add("schedulerName", $schedulerName)
+    
+    $taskHubName = "ps-test-taskhub-" + (RandomString -allChars $false -len 4)
+    $env.Add("taskHubName", $taskHubName)
+
     $envFile = 'env.json'
     if ($TestMode -eq 'live') {
         $envFile = 'localEnv.json'
@@ -52,5 +63,6 @@ function setupEnv() {
 }
 function cleanupEnv() {
     # Clean resources you create for testing
+    Remove-AzResourceGroup -Name $env.resourceGroup -Force
 }
 
