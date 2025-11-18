@@ -16,13 +16,13 @@ if(($null -eq $TestName) -or ($TestName -contains 'Remove-AzDurableTaskScheduler
 
 Describe 'Remove-AzDurableTaskScheduler' {
     It 'Delete' {
-        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
+        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
         Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
         Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
     }
 
     It 'DeleteViaIdentity' {
-        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
+        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
         Remove-AzDurableTaskScheduler -InputObject $scheduler
         Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
     }
