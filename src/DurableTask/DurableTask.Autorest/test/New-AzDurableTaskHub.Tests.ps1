@@ -15,19 +15,48 @@ if(($null -eq $TestName) -or ($TestName -contains 'New-AzDurableTaskHub'))
 }
 
 Describe 'New-AzDurableTaskHub' {
-    It 'CreateExpanded' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    BeforeAll {
+        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
     }
 
-    It 'CreateViaJsonString' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    AfterAll {
+        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
     }
 
-    It 'CreateViaJsonFilePath' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'CreateExpanded' {
+        $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
+        $taskHub.Name | Should -Be $env.taskHubName
+        $taskHub.Location | Should -Be $env.location
+        Remove-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup
     }
 
-    It 'CreateViaIdentitySchedulerExpanded' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'CreateViaJsonString' {
+        $body = @{
+            location = $env.location
+        } | ConvertTo-Json
+        $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup -JsonString $body
+        $taskHub.Name | Should -Be $env.taskHubName
+        $taskHub.Location | Should -Be $env.location
+        Remove-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup
+    }
+
+    It 'CreateViaJsonFilePath' {
+        $jsonFilePath = Join-Path $TestRecordingFile "..\taskhub-test.json"
+        @{
+            location = $env.location
+        } | ConvertTo-Json | Set-Content -Path $jsonFilePath
+        $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup -JsonFilePath $jsonFilePath
+        $taskHub.Name | Should -Be $env.taskHubName
+        $taskHub.Location | Should -Be $env.location
+        Remove-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup
+        Remove-Item -Path $jsonFilePath -Force
+    }
+
+    It 'CreateViaIdentitySchedulerExpanded' {
+        $scheduler = Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
+        $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -InputObject $scheduler -Location $env.location
+        $taskHub.Name | Should -Be $env.taskHubName
+        $taskHub.Location | Should -Be $env.location
+        Remove-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup
     }
 }
