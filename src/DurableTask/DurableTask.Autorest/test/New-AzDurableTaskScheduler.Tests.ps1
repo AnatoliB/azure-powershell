@@ -15,15 +15,32 @@ if(($null -eq $TestName) -or ($TestName -contains 'New-AzDurableTaskScheduler'))
 }
 
 Describe 'New-AzDurableTaskScheduler' {
-    It 'CreateExpanded' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'CreateExpanded' {
+        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
+        $scheduler.Name | Should -Be $env.schedulerName
+        $scheduler.Location | Should -Be $env.location
+        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
     }
 
-    It 'CreateViaJsonFilePath' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'CreateViaJsonString' {
+        $body = @{
+            location = $env.location
+        } | ConvertTo-Json
+        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -JsonString $body
+        $scheduler.Name | Should -Be $env.schedulerName
+        $scheduler.Location | Should -Be $env.location
+        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
     }
 
-    It 'CreateViaJsonString' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'CreateViaJsonFilePath' {
+        $jsonFilePath = Join-Path $TestRecordingFile "..\scheduler-test.json"
+        @{
+            location = $env.location
+        } | ConvertTo-Json | Set-Content -Path $jsonFilePath
+        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -JsonFilePath $jsonFilePath
+        $scheduler.Name | Should -Be $env.schedulerName
+        $scheduler.Location | Should -Be $env.location
+        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
+        Remove-Item -Path $jsonFilePath -Force
     }
 }

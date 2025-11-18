@@ -15,11 +15,15 @@ if(($null -eq $TestName) -or ($TestName -contains 'Remove-AzDurableTaskScheduler
 }
 
 Describe 'Remove-AzDurableTaskScheduler' {
-    It 'Delete' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'Delete' {
+        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
+        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
+        Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
     }
 
-    It 'DeleteViaIdentity' -skip {
-        { throw [System.NotImplementedException] } | Should -Not -Throw
+    It 'DeleteViaIdentity' {
+        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location
+        Remove-AzDurableTaskScheduler -InputObject $scheduler
+        Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
     }
 }
