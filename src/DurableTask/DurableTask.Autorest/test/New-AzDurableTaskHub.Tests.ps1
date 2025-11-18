@@ -39,7 +39,7 @@ Describe 'New-AzDurableTaskHub' {
 
     It 'CreateViaIdentitySchedulerExpanded' {
         $scheduler = Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
-        $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -InputObject $scheduler
+        $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -SchedulerInputObject $scheduler
         $taskHub.Name | Should -Be $env.taskHubName
         Remove-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup
     }
