@@ -15,14 +15,6 @@ if(($null -eq $TestName) -or ($TestName -contains 'Get-AzDurableTaskScheduler'))
 }
 
 Describe 'Get-AzDurableTaskScheduler' {
-    BeforeAll {
-        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
-    }
-
-    AfterAll {
-        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
-    }
-
     It 'List' {
         $schedulers = Get-AzDurableTaskScheduler -ResourceGroupName $env.resourceGroup
         $schedulers.Name | Should -Contain $env.schedulerName

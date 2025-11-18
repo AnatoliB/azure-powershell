@@ -15,15 +15,18 @@ if(($null -eq $TestName) -or ($TestName -contains 'Remove-AzDurableTaskScheduler
 }
 
 Describe 'Remove-AzDurableTaskScheduler' {
+
     It 'Delete' {
-        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
-        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
-        Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
+        $testSchedulerName = "test-scheduler-delete-" + (Get-Random -Maximum 9999)
+        New-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
+        Remove-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup
+        Get-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
     }
 
     It 'DeleteViaIdentity' {
-        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
+        $testSchedulerName = "test-scheduler-delid-" + (Get-Random -Maximum 9999)
+        $scheduler = New-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
         Remove-AzDurableTaskScheduler -InputObject $scheduler
-        Get-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
+        Get-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup | Should -BeNull
     }
 }

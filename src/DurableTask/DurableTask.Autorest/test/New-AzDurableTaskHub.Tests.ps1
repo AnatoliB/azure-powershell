@@ -15,14 +15,6 @@ if(($null -eq $TestName) -or ($TestName -contains 'New-AzDurableTaskHub'))
 }
 
 Describe 'New-AzDurableTaskHub' {
-    BeforeAll {
-        New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
-    }
-
-    AfterAll {
-        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
-    }
-
     It 'CreateExpanded' {
         $taskHub = New-AzDurableTaskHub -Name $env.taskHubName -SchedulerName $env.schedulerName -ResourceGroupName $env.resourceGroup
         $taskHub.Name | Should -Be $env.taskHubName

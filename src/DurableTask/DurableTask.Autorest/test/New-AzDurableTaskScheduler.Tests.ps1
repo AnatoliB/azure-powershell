@@ -16,13 +16,15 @@ if(($null -eq $TestName) -or ($TestName -contains 'New-AzDurableTaskScheduler'))
 
 Describe 'New-AzDurableTaskScheduler' {
     It 'CreateExpanded' {
-        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
-        $scheduler.Name | Should -Be $env.schedulerName
+        $testSchedulerName = "test-scheduler-create-" + (Get-Random -Maximum 9999)
+        $scheduler = New-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
+        $scheduler.Name | Should -Be $testSchedulerName
         $scheduler.Location | Should -Be $env.location
-        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
+        Remove-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup
     }
 
     It 'CreateViaJsonString' {
+        $testSchedulerName = "test-scheduler-json-" + (Get-Random -Maximum 9999)
         $body = @{
             location = $env.location
             sku = @{
@@ -33,13 +35,14 @@ Describe 'New-AzDurableTaskScheduler' {
                 ipAllowlist = @("10.0.0.0/8")
             }
         } | ConvertTo-Json
-        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -JsonString $body
-        $scheduler.Name | Should -Be $env.schedulerName
+        $scheduler = New-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup -JsonString $body
+        $scheduler.Name | Should -Be $testSchedulerName
         $scheduler.Location | Should -Be $env.location
-        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
+        Remove-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup
     }
 
     It 'CreateViaJsonFilePath' {
+        $testSchedulerName = "test-scheduler-file-" + (Get-Random -Maximum 9999)
         $jsonFilePath = Join-Path $TestRecordingFile "..\scheduler-test.json"
         @{
             location = $env.location
@@ -51,10 +54,10 @@ Describe 'New-AzDurableTaskScheduler' {
                 ipAllowlist = @("10.0.0.0/8")
             }
         } | ConvertTo-Json | Set-Content -Path $jsonFilePath
-        $scheduler = New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -JsonFilePath $jsonFilePath
-        $scheduler.Name | Should -Be $env.schedulerName
+        $scheduler = New-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup -JsonFilePath $jsonFilePath
+        $scheduler.Name | Should -Be $testSchedulerName
         $scheduler.Location | Should -Be $env.location
-        Remove-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup
+        Remove-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup
         Remove-Item -Path $jsonFilePath -Force
     }
 }

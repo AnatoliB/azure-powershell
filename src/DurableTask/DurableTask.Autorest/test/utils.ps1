@@ -55,6 +55,9 @@ function setupEnv() {
     $taskHubName = "ps-test-taskhub-" + (RandomString -allChars $false -len 4)
     $env.Add("taskHubName", $taskHubName)
 
+    # Create a shared scheduler to be used by most tests
+    New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
+
     $envFile = 'env.json'
     if ($TestMode -eq 'live') {
         $envFile = 'localEnv.json'
