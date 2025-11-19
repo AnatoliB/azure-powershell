@@ -16,7 +16,7 @@ if(($null -eq $TestName) -or ($TestName -contains 'New-AzDurableTaskScheduler'))
 
 Describe 'New-AzDurableTaskScheduler' {
     It 'CreateExpanded' {
-        $testSchedulerName = "test-scheduler-create-" + (Get-Random -Maximum 9999)
+        $testSchedulerName = "test-scheduler-create-1277"
         $scheduler = New-AzDurableTaskScheduler -Name $testSchedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
         $scheduler.Name | Should -Be $testSchedulerName
         $scheduler.Location | Should -Be $env.location
@@ -24,7 +24,7 @@ Describe 'New-AzDurableTaskScheduler' {
     }
 
     It 'CreateViaJsonString' {
-        $testSchedulerName = "test-scheduler-json-" + (Get-Random -Maximum 9999)
+        $testSchedulerName = "test-scheduler-json-7688"
         $body = @{
             location = $env.location
             properties = @{
@@ -42,7 +42,7 @@ Describe 'New-AzDurableTaskScheduler' {
     }
 
     It 'CreateViaJsonFilePath' {
-        $testSchedulerName = "test-scheduler-file-" + (Get-Random -Maximum 9999)
+        $testSchedulerName = "test-scheduler-file-2662"
         $jsonFilePath = Join-Path $TestRecordingFile "..\scheduler-test.json"
         @{
             location = $env.location
