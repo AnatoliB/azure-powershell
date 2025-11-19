@@ -44,16 +44,16 @@ function setupEnv() {
     $env.SubscriptionId = (Get-AzContext).Subscription.Id
     $env.Tenant = (Get-AzContext).Tenant.Id
     # For any resources you created for test, you should add it to $env here.
-    $env.Add("location", "northcentralus")
+    $null = $env.AddWithCache("location", "northcentralus", $UsePreviousConfigForRecord)
     $resourceGroup = "ps-test-durable-task-" + (RandomString -allChars $false -len 4)
-    $env.Add("resourceGroup", $resourceGroup)
+    $resourceGroup = $env.AddWithCache("resourceGroup", $resourceGroup, $UsePreviousConfigForRecord)
     New-AzResourceGroup -Name $env.resourceGroup -Location $env.location
     
     $schedulerName = "ps-test-scheduler-" + (RandomString -allChars $false -len 4)
-    $env.Add("schedulerName", $schedulerName)
+    $schedulerName = $env.AddWithCache("schedulerName", $schedulerName, $UsePreviousConfigForRecord)
     
     $taskHubName = "ps-test-taskhub-" + (RandomString -allChars $false -len 4)
-    $env.Add("taskHubName", $taskHubName)
+    $taskHubName = $env.AddWithCache("taskHubName", $taskHubName, $UsePreviousConfigForRecord)
 
     # Create a shared scheduler to be used by most tests
     New-AzDurableTaskScheduler -Name $env.schedulerName -ResourceGroupName $env.resourceGroup -Location $env.location -SkuName 'Dedicated' -SkuCapacity 1 -IPAllowlist @('10.0.0.0/8')
