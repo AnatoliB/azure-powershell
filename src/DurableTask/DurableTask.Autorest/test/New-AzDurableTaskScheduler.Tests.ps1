@@ -27,11 +27,11 @@ Describe 'New-AzDurableTaskScheduler' {
         $testSchedulerName = "test-scheduler-json-" + (Get-Random -Maximum 9999)
         $body = @{
             location = $env.location
-            sku = @{
-                name = "Dedicated"
-                capacity = 1
-            }
             properties = @{
+                sku = @{
+                    name = "Dedicated"
+                    capacity = 1
+                }
                 ipAllowlist = @("10.0.0.0/8")
             }
         } | ConvertTo-Json
@@ -46,11 +46,11 @@ Describe 'New-AzDurableTaskScheduler' {
         $jsonFilePath = Join-Path $TestRecordingFile "..\scheduler-test.json"
         @{
             location = $env.location
-            sku = @{
-                name = "Dedicated"
-                capacity = 1
-            }
             properties = @{
+                sku = @{
+                    name = "Dedicated"
+                    capacity = 1
+                }
                 ipAllowlist = @("10.0.0.0/8")
             }
         } | ConvertTo-Json | Set-Content -Path $jsonFilePath
